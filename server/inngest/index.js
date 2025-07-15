@@ -2,10 +2,10 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import connectDb from "../configs/db.js";
 
-// Create a client to send and receive events
+// Create Inngest client
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
 
-// ========== SYNC USER CREATION ==========
+// ======= SYNC USER CREATION =======
 const syncUserCreation = inngest.createFunction(
   { id: "sync-user-from-clerk" },
   { event: "clerk/user.created" },
@@ -13,23 +13,26 @@ const syncUserCreation = inngest.createFunction(
     try {
       await connectDb();
 
-      const { id, first_name, last_name, email_address, image_url } = event.data;
+      const { id, first_name, last_name, email_addresses, image_url } = event.data;
+
+      console.log("📥 Incoming user:", event.data);
 
       const userData = {
         _id: id,
-        email: email_address[0].email_address,
-        name: first_name + " " + last_name,
+        email: email_addresses?.[0]?.email_address || "unknown@example.com",
+        name: `${first_name} ${last_name}`,
         image: image_url,
       };
 
-      await User.create(userData);
+      const newUser = await User.create(userData);
+      console.log("✅ User saved to DB:", newUser);
     } catch (error) {
-      console.error("User creation failed:", error.message);
+      console.error("❌ User creation failed:", error.message);
     }
   }
 );
 
-// ========== SYNC USER DELETION ==========
+// ======= SYNC USER DELETION =======
 const syncUserDeletion = inngest.createFunction(
   { id: "delete-user-from-clerk" },
   { event: "clerk/user.deleted" },
@@ -37,14 +40,16 @@ const syncUserDeletion = inngest.createFunction(
     try {
       await connectDb();
       const { id } = event.data;
-      await User.findByIdAndDelete(id);
+
+      const deletedUser = await User.findByIdAndDelete(id);
+      console.log("🗑️ User deleted:", deletedUser);
     } catch (error) {
-      console.error("User deletion failed:", error.message);
+      console.error("❌ User deletion failed:", error.message);
     }
   }
 );
 
-// ========== SYNC USER UPDATE ==========
+// ======= SYNC USER UPDATE =======
 const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
   { event: "clerk/user.updated" },
@@ -52,19 +57,24 @@ const syncUserUpdation = inngest.createFunction(
     try {
       await connectDb();
 
-      const { id, first_name, last_name, email_address, image_url } = event.data;
+      const { id, first_name, last_name, email_addresses, image_url } = event.data;
 
-      const userData = {
-        email: email_address[0].email_address,
-        name: first_name + " " + last_name,
+      const updatedData = {
+        email: email_addresses?.[0]?.email_address || "unknown@example.com",
+        name: `${first_name} ${last_name}`,
         image: image_url,
       };
 
-      await User.findByIdAndUpdate(id, userData);
+      const updatedUser = await User.findByIdAndUpdate(id, updatedData, { new: true });
+      console.log("🔁 User updated:", updatedUser);
     } catch (error) {
-      console.error("User update failed:", error.message);
+      console.error("❌ User update failed:", error.message);
     }
   }
 );
 
-export const functions = [syncUserCreation, syncUserDeletion, syncUserUpdation];
+export const functions = [
+  syncUserCreation,
+  syncUserDeletion,
+  syncUserUpdation,
+];
