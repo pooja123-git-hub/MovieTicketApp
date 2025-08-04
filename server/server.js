@@ -29,6 +29,7 @@
 
 import express from 'express';
 import cors from 'cors';
+
 import 'dotenv/config.js';
 import connectDb from './configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
@@ -38,9 +39,9 @@ import showRouter from './routes/showRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
-
+const port=5000;
 const app = express();
-
+ await connectDb();
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -59,18 +60,21 @@ app.use('/api/admin',adminRouter);
 app.use('/api/user',userRouter);
 
 // Start DB and Server together
-const PORT = process.env.PORT || 5000;
 
-const startServer = async () => {
-  try {
-    await connectDb(); // ensure DB is connected
-    app.listen(PORT, () => {
-      console.log(`✅ Server running at http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("❌ Failed to start server:", error.message);
-    process.exit(1);
-  }
-};
 
-startServer();
+// const startServer = async () => {
+//   try {
+//     await connectDb(); // ensure DB is connected
+//     app.listen(PORT, () => {
+//       console.log(`✅ Server running at http://localhost:${PORT}`);
+//     });
+//   } catch (error) {
+//     console.error("❌ Failed to start server:", error.message);
+//     process.exit(1);
+//   }
+// };
+
+// startServer();
+app.listen(port,()=>{
+  console.log(`Server is listening on ${port}`);
+})
