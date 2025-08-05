@@ -73,7 +73,7 @@ await booking.save()
 await inngest.send({
     name:'app/checkpayment',
     date:{
-        bookingId:booking._id.tostring()
+        bookingId:booking._id.toString()
     }
 })
 res.json({success:true, url:session.url})
