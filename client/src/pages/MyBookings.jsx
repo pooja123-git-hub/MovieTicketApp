@@ -21,6 +21,8 @@ const MyBookings = () => {
     
    console.log("Fetched booking data:", data); 
     if(data.success){
+            console.log("Bookings data:", data.bookings); // ✅ Correct log
+
       setBookings(data.bookings);
       
     }
@@ -43,6 +45,7 @@ const MyBookings = () => {
       </div>
       <h1 className="text-lg font-semibold mb-4">My Bookings</h1>
       {bookings.map((item, index) => (
+        
         <div
           key={index}
           className="flex flex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl"
