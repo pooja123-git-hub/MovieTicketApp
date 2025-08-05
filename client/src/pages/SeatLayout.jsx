@@ -25,7 +25,7 @@ try {
     setShow(data);
   }
 } catch (error) {
-  
+  console.log(error)
 }   
   };
 

@@ -72,7 +72,7 @@ await booking.save()
 //run inngest schedular to check paymentstatus after 10 minutes
 await inngest.send({
     name:'app/checkpayment',
-    date:{
+    data:{
         bookingId:booking._id.toString()
     }
 })
