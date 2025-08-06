@@ -6,7 +6,6 @@
   "scripts": {
     "server": "nodemon server.js",
     "start": "node server.js"
-    
   },
   "keywords": [],
   "author": "",
@@ -21,6 +20,7 @@
     "express": "^5.1.0",
     "inngest": "^3.40.1",
     "mongoose": "^8.16.3",
+    "nodemailer": "^7.0.5",
     "stripe": "^18.4.0",
     "svix": "^1.70.0"
   },
