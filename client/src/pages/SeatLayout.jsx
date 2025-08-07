@@ -95,7 +95,7 @@ if(data.success){
  window.location.href=data.url;
 }
 else{
-  toast.error(error.message);
+  toast.error(data.message);
 }
 
     
