@@ -6,25 +6,30 @@ import { dateFormat } from "../../lib/DateFormat";
 import { useAppContext } from "../../context/AppContext";
 
 const ListBookings = () => {
-            const {axios,getToken,user}=useAppContext();
-  
+  const { axios, getToken, user } = useAppContext();
+
   const currency = import.meta.env.VITE_CURRENCY;
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const getAllBookings = async () => {
     try {
-      const {data}=await axios.get('/api/admin/all-bookings',{headers:{Authorization:`Bearer ${ await getToken()}`}})
+      const { data } = await axios.get("/api/admin/all-bookings", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       setBookings(data.bookings);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     setLoading(false);
   };
+
   useEffect(() => {
-    if(user){
-    getAllBookings();
+    if (user) {
+      getAllBookings();
     }
   }, [user]);
+
   return !loading ? (
     <>
       <Title text1="List" text2="Bookings" />
@@ -40,16 +45,40 @@ const ListBookings = () => {
             </tr>
           </thead>
           <tbody className="text-sm font-light">
-            {bookings.map((item,index)=>(
-                <tr  key={index} className="border-b border-primary/20 bg-primary/5 even:bg-primary/10">
-                    <td className="p-2 min-w-45 pl-5">{item.user.name}</td>
-                    <td className="p-2">{item.show.movie.title}</td>
-                    <td className="p-2">{dateFormat(item.show.showDateTime)}</td>
-                    <td className="p-2">{Object.keys(item.bookedSeats).map(seat=>item.bookedSeats[seat]).join(", ")}</td>
-                    <td className="p-2">{currency} {item.amount}</td>
-
+            {Array.isArray(bookings) && bookings.length > 0 ? (
+              bookings.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-primary/20 bg-primary/5 even:bg-primary/10"
+                >
+                  <td className="p-2 min-w-45 pl-5">
+                    {item?.user?.name || "—"}
+                  </td>
+                  <td className="p-2">
+                    {item?.show?.movie?.title || "—"}
+                  </td>
+                  <td className="p-2">
+                    {item?.show?.showDateTime
+                      ? dateFormat(item.show.showDateTime)
+                      : "—"}
+                  </td>
+                  <td className="p-2">
+                    {item?.bookedSeats && typeof item.bookedSeats === "object"
+                      ? Object.values(item.bookedSeats).join(", ")
+                      : "No Seats"}
+                  </td>
+                  <td className="p-2">
+                    {currency} {item?.amount || "0"}
+                  </td>
                 </tr>
-            ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center py-4">
+                  No bookings found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
