@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { dummyBookingData } from "../assets/assets";
+
 import Loading from "../components/Loading";
 import BlurCircle from "../components/BlurCircle";
 import timeFormat from "../lib/TimeFormat";
@@ -74,7 +74,7 @@ const MyBookings = () => {
                 {item.amount}
               </p>
               {!item.isPaid && 
-                <Link  to={item.paymentLink} className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">
+                <Link to={item.paymentLink} className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">
                   Pay Now
                 </Link>
               }
