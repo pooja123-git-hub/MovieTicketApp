@@ -1,42 +1,85 @@
 
 
+// import express from 'express';
+// import cors from 'cors';
+
+// import 'dotenv/config.js';
+// import connectDb from './configs/db.js';
+// import { clerkMiddleware } from '@clerk/express';
+// import { serve } from "inngest/express";
+// import { inngest, functions } from "./inngest/index.js";
+// import showRouter from './routes/showRoutes.js';
+// import bookingRouter from './routes/bookingRoutes.js';
+// import adminRouter from './routes/adminRoutes.js';
+// import userRouter from './routes/userRoutes.js';
+// import { stripeWebhooks } from './controllers/stripeWebhooks.js';
+// const port=5000;
+// const app = express();
+
+//  await connectDb();
+
+// //stripe webhooks routes
+// app.use('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
+// app.use(express.json());
+// app.use(cors());
+// app.use(clerkMiddleware());
+
+
+
+// // Middleware
+// app.use("/api/inngest", serve({ client: inngest, functions }));
+// app.use('/api/show', showRouter);
+// app.use('/api/booking',bookingRouter);
+// app.use('/api/admin',adminRouter);
+// app.use('/api/user',userRouter);
+// // Routes
+// app.get('/', (req, res) => {
+//   res.send("Radhey Radhey");
+// });
+
+// app.listen(port,()=>{
+//   console.log(`Server is listening on ${port}`);
+// })
 import express from 'express';
 import cors from 'cors';
-
 import 'dotenv/config.js';
 import connectDb from './configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
-import { serve } from "inngest/express";
-import { inngest, functions } from "./inngest/index.js";
+import { serve } from 'inngest/express';
+import { inngest, functions } from './inngest/index.js';
 import showRouter from './routes/showRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
-import { stripeWebhooks } from './controllers/stripeWebhooks.js';
-const port=5000;
+import { razorpayWebhook } from './controllers/razorpayWebhooks.js'; // ✅ custom controller
+
+const port = 5000;
 const app = express();
 
- await connectDb();
+await connectDb();
 
-//stripe webhooks routes
-app.use('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
+// ✅ Razorpay webhooks route
+app.post('/api/razorpay', express.json({ type: 'application/json' }), razorpayWebhook);
+
+// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
 
+// Inngest
+app.use('/api/inngest', serve({ client: inngest, functions }));
 
-
-// Middleware
-app.use("/api/inngest", serve({ client: inngest, functions }));
-app.use('/api/show', showRouter);
-app.use('/api/booking',bookingRouter);
-app.use('/api/admin',adminRouter);
-app.use('/api/user',userRouter);
 // Routes
+app.use('/api/show', showRouter);
+app.use('/api/booking', bookingRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/user', userRouter);
+
+// Test route
 app.get('/', (req, res) => {
   res.send("Radhey Radhey");
 });
 
-app.listen(port,()=>{
+app.listen(port, () => {
   console.log(`Server is listening on ${port}`);
-})
+});
