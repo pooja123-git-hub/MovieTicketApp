@@ -40,9 +40,12 @@
 // app.listen(port,()=>{
 //   console.log(`Server is listening on ${port}`);
 // })
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import 'dotenv/config.js';
+
 import connectDb from './configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';

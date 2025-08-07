@@ -53,6 +53,7 @@ import { inngest } from "../inngest/index.js";
 export const razorpayWebhook = async (req, res) => {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
   const signature = req.headers["x-razorpay-signature"];
+console.log("RAZORPAY_WEBHOOK_SECRET:", secret);
 
   const body = JSON.stringify(req.body); // make sure bodyParser.raw is used
 
