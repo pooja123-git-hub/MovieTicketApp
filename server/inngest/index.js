@@ -130,7 +130,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
 // ======= UPDATED: SEND SHOW REMINDER EMAIL =======
 const sendShowRemainder = inngest.createFunction(
   { id: 'send-show-remainder' },
-  { cron: "0 * /8 * * *" }, // Every 8 hours
+ { cron: "0 */8 * * *" }, // Every 8 hours
   async ({ step }) => {
     const now = new Date();
     const is8hours = new Date(now.getTime() + 8 * 60 * 60 * 1000);
