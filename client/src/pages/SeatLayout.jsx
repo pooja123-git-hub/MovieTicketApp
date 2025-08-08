@@ -194,6 +194,7 @@ const SeatLayout = () => {
   const handleSeatClick = (seatId) => {
     if (!selectedTime) return toast("Please select time first");
     if (!selectedSeats.includes(seatId) && selectedSeats.length > 4) {
+      
       return toast("You can only select 5 seats");
     }
     if (occupiedSeats.includes(seatId)) {
@@ -242,9 +243,11 @@ const SeatLayout = () => {
   };
 
   const bookTicket = async () => {
+    
     try {
       if (!user) return toast.error('Please login to proceed');
       if (!selectedSeats || !selectedSeats.length) return toast.error('Please select a time and seats');
+  console.log("Selected Seats", selectedSeats);
 
       const { data } = await axios.post(
         '/api/booking/create',
