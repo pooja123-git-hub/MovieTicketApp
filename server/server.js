@@ -15,13 +15,15 @@ import userRouter from './routes/userRoutes.js';
 import { stripeWebhooks } from './controllers/stripeWebhooks.js';
 const port=5000;
 const app = express();
+app.use(cors());
 
  await connectDb();
 
 //stripe webhooks routes
 app.use('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
-app.use(express.json());
-app.use(cors());
+app.use(express.json())
+
+
 app.use(clerkMiddleware());
 
 
